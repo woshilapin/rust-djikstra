@@ -2,6 +2,20 @@ use crate::node::Node;
 
 use std::collections::HashMap;
 
+trait Pick<V> {
+    fn pick(&self) -> Option<&V>;
+}
+
+impl<K : std::cmp::Eq + std::hash::Hash, V> Pick<V> for HashMap<K, V> {
+    fn pick(&self) -> Option<&V> {
+        if let Some(key) = self.keys().next() {
+            self.get(&key)
+        } else {
+            None
+        }
+    }
+}
+
 pub fn djikstra(nodes: Vec<Node>) {
     println!("Start Djikstra algorithm");
     let source: &Node = &nodes[0];
