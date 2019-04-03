@@ -32,7 +32,7 @@ pub fn djikstra(nodes: Vec<Node>) {
         println!("Number of nodes in 'q' is {}", q.len());
         let mut minimum: u64 = std::u64::MAX;
         let mut minimum_node: &Node = source;
-        for (k, n) in q.iter() {
+        for (k, n) in &mut q {
             if let Some(&d) = distances.get(k) {
                 if d < minimum {
                     minimum = d;
@@ -45,7 +45,7 @@ pub fn djikstra(nodes: Vec<Node>) {
             minimum_node.id, minimum
         );
         if let Some(removed_node) = q.remove(&minimum_node.id) {
-            for c in removed_node.connections.iter() {
+            for c in &removed_node.connections {
                 println!("Process connection from {} to {}", removed_node.id, c.to);
                 let current_distance: u64 = *distances.get(&c.to).unwrap();
                 println!("Distance from source to {} is {}", c.to, current_distance);
