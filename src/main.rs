@@ -1,8 +1,9 @@
 mod djikstra;
 mod node;
 
-use crate::node::{Link, Node};
 use crate::djikstra::djikstra;
+use crate::node::{Link, Node};
+use std::collections::HashMap;
 
 fn main() {
     let node1 = Node {
@@ -51,6 +52,24 @@ fn main() {
         ],
     };
     let nodes = vec![node1, node2, node3, node4, node5, node6];
-    println!("Graph initialized");
-    djikstra(nodes);
+    let mut distances = HashMap::new();
+    distances.insert(1, djikstra(&nodes, 1));
+    distances.insert(2, djikstra(&nodes, 2));
+    distances.insert(3, djikstra(&nodes, 3));
+    distances.insert(4, djikstra(&nodes, 4));
+    distances.insert(5, djikstra(&nodes, 5));
+    distances.insert(6, djikstra(&nodes, 6));
+    println!("   {:^4} {:^4} {:^4} {:^4} {:^4} {:^4}", 1, 2, 3, 4, 5, 6);
+    println!("   -----------------------------");
+    let mut sorted_map: Vec<(&usize, &HashMap<_, _>)> = distances.iter().collect();
+    sorted_map.sort_by(|a, b| a.0.cmp(b.0));
+    for (source_id, distances_from_source) in sorted_map {
+        print!("{} |", source_id);
+        let mut sorted_distance: Vec<(&usize, &u64)> = distances_from_source.iter().collect();
+        sorted_distance.sort_by(|a, b| a.0.cmp(b.0));
+        for (_, distance) in sorted_distance {
+            print!("{:^4}|", distance);
+        }
+        println!();
+    }
 }
