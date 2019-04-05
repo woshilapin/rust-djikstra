@@ -5,6 +5,10 @@ use crate::djikstra::djikstra;
 use crate::node::{Link, Node};
 use std::collections::HashMap;
 
+fn sort_by_id<'a, T>(entry: &'a (&usize, &T)) -> usize {
+    *entry.0
+}
+
 fn main() {
     let node1 = Node {
         id: 1,
@@ -53,20 +57,17 @@ fn main() {
     };
     let nodes = vec![node1, node2, node3, node4, node5, node6];
     let mut distances = HashMap::new();
-    distances.insert(1, djikstra(&nodes, 1));
-    distances.insert(2, djikstra(&nodes, 2));
-    distances.insert(3, djikstra(&nodes, 3));
-    distances.insert(4, djikstra(&nodes, 4));
-    distances.insert(5, djikstra(&nodes, 5));
-    distances.insert(6, djikstra(&nodes, 6));
+    for id in 1..7 {
+        distances.insert(id, djikstra(&nodes, id));
+    }
     println!("   {:^4} {:^4} {:^4} {:^4} {:^4} {:^4}", 1, 2, 3, 4, 5, 6);
     println!("   -----------------------------");
     let mut sorted_map: Vec<(&usize, &HashMap<_, _>)> = distances.iter().collect();
-    sorted_map.sort_by(|a, b| a.0.cmp(b.0));
+    sorted_map.sort_by_key(sort_by_id);
     for (source_id, distances_from_source) in sorted_map {
         print!("{} |", source_id);
         let mut sorted_distance: Vec<(&usize, &u64)> = distances_from_source.iter().collect();
-        sorted_distance.sort_by(|a, b| a.0.cmp(b.0));
+        sorted_distance.sort_by_key(sort_by_id);
         for (_, distance) in sorted_distance {
             print!("{:^4}|", distance);
         }
